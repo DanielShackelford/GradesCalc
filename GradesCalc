@@ -1,0 +1,93 @@
+// 11/8/19, Tarrant County College
+// Dr. Tyson McMillan
+// The idea was to make a vector based off the size of the user and then sort that grades vector
+// I learned quite a bit about how vectors could be sorted and interated with
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <iomanip>
+#include <numeric>
+#include <fstream>
+
+#include "Input_Validation_Extended.h"
+
+using namespace std;
+
+void vecInput(vector<double> &gradesVector)
+{
+  int n; 
+  n = validateInt(n);
+ gradesVector.resize(n);
+}
+
+void printVector(vector<double> &gradesVector)
+{
+   string color = "\x1b[" + to_string(32) + ";1m";
+  string reset = "\x1b[0m";
+
+  for (int j=0; j<gradesVector.size(); j++) {
+    cout << color << gradesVector[j] << reset << endl;}
+}
+
+void printTranscript(vector<double> &gradesVector)
+{
+  ofstream myfile;
+  myfile.open ("Transcript.txt");
+  for (int j=0; j<gradesVector.size(); j++) {
+    myfile << gradesVector[j] << endl;}
+  myfile.close(); 
+}
+
+void vectorSort(vector<double> &gradesVector)
+{
+  sort(gradesVector.begin(), gradesVector.end());
+  reverse(gradesVector.begin(), gradesVector.end());
+}
+
+int main() {
+
+  vector<double> gradesVector;
+  string option = "";
+  string color = "\x1b[" + to_string(32) + ";1m";
+  string reset = "\x1b[0m";
+
+  cout << fixed << showpoint;
+    cout << setprecision(4);
+
+  do {
+      cout << "Hey welcome, Please enter the amount of grades you woud like to see : ";
+       vecInput(gradesVector);
+
+      cout << "\nYou entered " << color << gradesVector.size() << reset << " for the amount of grades" << endl;
+
+      cout << "\nNow please below enter the " << color << gradesVector.size() << reset << " grades below:" << endl;
+
+       for (int i=0; i<gradesVector.size(); i++) {
+       gradesVector[i] = validateDouble(gradesVector[i]);
+       //cin >> gradesVector[i]; 
+       }
+
+       double vAverage = accumulate( gradesVector.begin(), 
+        gradesVector.end(), 0.0)/gradesVector.size();
+        // credit to https://stackoverflow.com/questions/28574346/find-average-of-input-to-vector-c
+        // for the help with use of accumulate
+
+      cout << "\n\nThe average of your grades is: " << color << vAverage << reset;
+
+       cout << "\nYour grades sorted from greatest to least below :" << endl;  
+  
+       vectorSort(gradesVector);
+       printVector(gradesVector);
+       printTranscript(gradesVector);
+
+       cout << "Enter 'e'or 'E' to end the program, " << endl
+      << "Or enter any other key to clear the screen and loop the program: ";
+      cin >> option;
+
+      cout << "\033[2J\033[1;1H";
+    }
+    while(option != "e" && option != "E");
+    cout << "\nGoodbye" << endl;
+    return 0;
+}
+
